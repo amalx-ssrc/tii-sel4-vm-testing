@@ -49,7 +49,8 @@ jobs:
             MANIFEST_URL: ${{ inputs.manifest-url }}
             MANIFEST_REVISION: ${{ inputs.manifest-revision }}
             MANIFEST: ${{ inputs.manifest-file }}
-
+            SSH_KEY: ${{ secrets.SSH_KEY }}
+            SSH_KEYSCAN_URL: 'github.com'
         # - name: sync manifest repository
         #   run: |      
         #     ~/.bin/repo init \
@@ -159,9 +160,9 @@ jobs:
         - name: Push to artifactory
           uses: ./.github/actions/artifact-publish/@tii/development
           with:
-            rt-user: ${{ secrets.rt-user }}
-            rt-api-key: ${{ secrets.rt-api-key }}
-            rt-url: ${{ secrets.rt-url }}
+            rt-user: ${{ secrets.RT_USER }}
+            rt-api-key: ${{ secrets.RT_APIKEY }}
+            rt-url: ${{ secrets.RT_URL }}
             build-num: ${{ github.run_number }}
             input-paths:  |
               README.md:tii-sel4-vm-release/
