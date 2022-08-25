@@ -28,7 +28,7 @@ on:
 jobs:
     tii-sel4-vm:
       name: build tii-sel4-vm
-      runs-on: self-hosted
+      runs-on: ubuntu-latest
       steps:
         - name: Prepare workspace
           run: |
