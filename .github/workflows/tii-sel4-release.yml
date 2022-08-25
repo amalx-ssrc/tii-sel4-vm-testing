@@ -40,6 +40,8 @@ jobs:
         #     mkdir -p ~/.bin
         #     curl https://storage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo
         #     chmod a+rx ~/.bin/repo
+        - name: Checkout code for using local actions
+          uses: actions/checkout@v2
 
         - name: check out code
           uses: ./.github/actions/repo-manifest-checkout
