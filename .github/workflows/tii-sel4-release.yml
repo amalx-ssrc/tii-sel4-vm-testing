@@ -158,7 +158,7 @@ jobs:
         - name: Prepare artifactory for upload
           uses: "jfrog/setup-jfrog-cli@v2"
         - name: Push to artifactory
-          uses: ./.github/actions/artifact-publish/@tii/development
+          uses: ./.github/actions/artifact-publish
           with:
             rt-user: ${{ secrets.RT_USER }}
             rt-api-key: ${{ secrets.RT_APIKEY }}
