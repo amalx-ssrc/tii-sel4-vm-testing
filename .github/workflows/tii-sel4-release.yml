@@ -49,7 +49,7 @@ jobs:
 
         - name: Build Docker image
           run: |
-            sudo chown $USER.$USER workspace
+            sudo chown -R $USER.$USER workspace
             cd workspace
             make docker
         - name: Build root file systems and kernel images
