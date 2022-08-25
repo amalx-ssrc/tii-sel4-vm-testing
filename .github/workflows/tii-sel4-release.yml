@@ -48,6 +48,7 @@ jobs:
 
         - name: Build Docker image
           run: |
+            cd workspace
             make docker
         - name: Build root file systems and kernel images
           run: |
