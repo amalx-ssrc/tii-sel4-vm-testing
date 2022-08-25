@@ -53,14 +53,17 @@ jobs:
             make docker
         - name: Build root file systems and kernel images
           run: |
+            cd workspace
             sed -i '$s/$/ -c "cd vm-images;. setup.sh;bitbake vm-image-driver;exit"/' ./docker/enter_container.sh
             make shell
         - name: Copy kernel in place for seL4 builds
           run: |
+            cd workspace
             cp vm-images/build/tmp/deploy/images/vm-raspberrypi4-64/Image \
             projects/camkes-vm-images/rpi4
         - name: make rpi4_defconfig
           run: |
+            cd workspace
             make rpi4_defconfig
         - name: Build vm_minimal
           uses: ./.github/actions/vm-image
