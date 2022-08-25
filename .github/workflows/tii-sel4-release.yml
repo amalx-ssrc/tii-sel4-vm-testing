@@ -32,6 +32,7 @@ jobs:
       steps:
         - name: Prepare workspace
           run: |
+          ls
            rm -rf *
            echo "TII_SEL4_RELEASE=tii_sel4_${{inputs.tii_sel4_version}}" >> $GITHUB_ENV
         - name: Checkout code for using local actions
