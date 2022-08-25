@@ -34,6 +34,8 @@ jobs:
           run: |
            rm -rf *
            echo "TII_SEL4_RELEASE=tii_sel4_${{inputs.tii_sel4_version}}" >> $GITHUB_ENV
+        - name: Checkout code for using local actions
+          uses: actions/checkout@v2
 
         - name: check out code
           uses: ./.github/actions/repo-manifest-checkout
@@ -59,22 +61,22 @@ jobs:
           run: |
             make rpi4_defconfig
         - name: Build vm_minimal
-          uses: ./.github/actions/vm-image@tii/development
+          uses: ./.github/actions/vm-image
           with:
             CONFIG: ${{ inputs.platform }}
             TARGET: 'vm_minimal'
         - name: Build vm_multi
-          uses: ./.github/actions/vm-image@tii/development
+          uses: ./.github/actions/vm-image
           with:
             CONFIG: ${{ inputs.platform }}
             TARGET: 'vm_multi'
         - name: Build sel4test
-          uses: ./.github/actions/vm-image@tii/development
+          uses: ./.github/actions/vm-image
           with:
             CONFIG: ${{ inputs.platform }}
             TARGET: 'sel4test'
         - name: Build vm_qemu_virtio
-          uses: ./.github/actions/vm-image@tii/development
+          uses: ./.github/actions/vm-image
           with:
             CONFIG: ${{ inputs.platform }}
             TARGET: 'vm_qemu_virtio'
