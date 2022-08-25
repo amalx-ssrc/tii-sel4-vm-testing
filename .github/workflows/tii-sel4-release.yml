@@ -54,6 +54,7 @@ jobs:
             make docker
         - name: Build root file systems and kernel images
           run: |
+            sudo chown -R $USER.$USER workspace
             cd workspace
             sed -i '$s/$/ -c "cd vm-images;. setup.sh;bitbake vm-image-driver;exit"/' ./docker/enter_container.sh
             make shell
