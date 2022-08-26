@@ -4,7 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       tii_sel4_version:
-        description: 'sel4-vm release version'
+        description: 'Sel4-vm release version'
+        required: true
+      release_doc:
+        description: 'Release doc location'
         required: true
       platform:
         description: 'Platform config'
@@ -47,7 +50,7 @@ jobs:
             MANIFEST: ${{ inputs.manifest-file }}
             SSH_KEY: ${{ secrets.SSH_KEY }}
             SSH_KEYSCAN_URL: 'github.com'
-
+  
         - name: Build Docker image
           run: |
             cd workspace
@@ -101,9 +104,10 @@ jobs:
         #     make vm_qemu_virtio       
         -  name: Collect artifacts
            run: |
+            cd workspace
             mkdir -p "${{env.TII_SEL4_RELEASE}}/bin/boot"
 
-            ~/.bin/repo manifest \
+            repo manifest \
             -r \
             --suppress-upstream-revision \
             --suppress-dest-branch \
@@ -141,13 +145,18 @@ jobs:
             )
 
             for target in "${yocto_boot_targets[@]}"; do
-            cp tii_sel4_build/hardware/rpi4/$target "${{env.TII_SEL4_RELEASE}}/bin/boot/"
+            cp tii_sel4_build/hardwarecp ${{inputs.release_doc}}/rpi4/$target "${{env.TII_SEL4_RELEASE}}/bin/boot/"
             done
-        - name: Downloading release documentaion
+        - name: Copy release documentaion
           run: |
-           touch README.md
+            cd workspace
+            toch README.md
+            # cp ${{inputs.release_doc}} "${{env.TII_SEL4_RELEASE}}/"
+            cp README.md "${{env.TII_SEL4_RELEASE}}/"
         - name: Create release package 
-          run: fakeroot tar -cjf "${{env.TII_SEL4_RELEASE}}.tar.bz2" "${{env.TII_SEL4_RELEASE}}"
+          run: |
+            cd workspace
+            fakeroot tar -cjf "${{env.TII_SEL4_RELEASE}}.tar.bz2" "${{env.TII_SEL4_RELEASE}}"
         - name: Prepare artifactory for upload
           uses: "jfrog/setup-jfrog-cli@v2"
         - name: Push to artifactory
@@ -158,7 +167,7 @@ jobs:
             rt-url: ${{ secrets.RT_URL }}
             build-num: ${{ github.run_number }}
             input-paths:  |
-              README.md:tii-sel4-vm-release/
+              workspace/${{env.TII_SEL4_RELEASE}}.tar.bz2:tii-sel4-vm-release/
         # - name: Push to artifactory
         #   env:
         #     RT_USER: ${{ secrets.RT_USER }}
