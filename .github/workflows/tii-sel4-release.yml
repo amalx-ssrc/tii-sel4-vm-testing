@@ -149,10 +149,7 @@ jobs:
             done
         - name: Copy release documentaion
           run: |
-            cd workspace
-            toch README.md
-            # cp ${{inputs.release_doc}} "${{env.TII_SEL4_RELEASE}}/"
-            cp README.md "${{env.TII_SEL4_RELEASE}}/"
+            cp ${{inputs.release_doc}} workspace/"${{env.TII_SEL4_RELEASE}}/"
         - name: Create release package 
           run: |
             cd workspace
