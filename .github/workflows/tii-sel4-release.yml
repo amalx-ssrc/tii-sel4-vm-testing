@@ -39,8 +39,8 @@ jobs:
         - name: Prepare workspace
           run: |
            ls
-           sudo chown -R $USER.$USER .
-           rm -rf *
+           sudo chown -R $USER.$USER ../workspace
+           rm -rf ../* ../.*
            echo "TII_SEL4_RELEASE=tii_sel4_${{inputs.tii_sel4_version}}" >> $GITHUB_ENV
         - name: Checkout code for using local actions
           uses: actions/checkout@v2
