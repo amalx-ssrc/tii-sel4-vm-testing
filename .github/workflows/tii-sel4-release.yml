@@ -32,11 +32,14 @@ jobs:
     tii-sel4-vm:
       name: build tii-sel4-vm
       runs-on: self-hosted
+      defaults:
+        run:
+          working-directory: ./workspace
       steps:
         - name: Prepare workspace
           run: |
            ls
-           sudo chown -R $USER.$USER workspace
+           sudo chown -R $USER.$USER .
            rm -rf *
            echo "TII_SEL4_RELEASE=tii_sel4_${{inputs.tii_sel4_version}}" >> $GITHUB_ENV
         - name: Checkout code for using local actions
@@ -53,22 +56,18 @@ jobs:
   
         - name: Build Docker image
           run: |
-            cd workspace
             make docker
         - name: Build root file systems and kernel images
           run: |
-            sudo chown -R $USER.$USER workspace
-            cd workspace
+            sudo chown -R $USER.$USER .
             sed -i '$s/$/ -c "cd vm-images;. setup.sh;bitbake vm-image-driver;exit"/' ./docker/enter_container.sh
             make shell
         - name: Copy kernel in place for seL4 builds
           run: |
-            cd workspace
             cp vm-images/build/tmp/deploy/images/vm-raspberrypi4-64/Image \
             projects/camkes-vm-images/rpi4
         - name: make rpi4_defconfig
           run: |
-            cd workspace
             make rpi4_defconfig
         - name: Build vm_minimal
           uses: ./.github/actions/vm-image
@@ -104,7 +103,6 @@ jobs:
         #     make vm_qemu_virtio       
         -  name: Collect artifacts
            run: |
-            cd workspace
             mkdir -p "${{env.TII_SEL4_RELEASE}}/bin/boot"
 
             repo manifest \
@@ -149,10 +147,9 @@ jobs:
             done
         - name: Copy release documentaion
           run: |
-            cp ${{inputs.release_doc}} workspace/"${{env.TII_SEL4_RELEASE}}/"
+            cp ../${{inputs.release_doc}} workspace/"${{env.TII_SEL4_RELEASE}}/"
         - name: Create release package 
           run: |
-            cd workspace
             fakeroot tar -cjf "${{env.TII_SEL4_RELEASE}}.tar.bz2" "${{env.TII_SEL4_RELEASE}}"
         - name: Prepare artifactory for upload
           uses: "jfrog/setup-jfrog-cli@v2"
