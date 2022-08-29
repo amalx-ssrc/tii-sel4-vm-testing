@@ -32,14 +32,11 @@ jobs:
     tii-sel4-vm:
       name: build tii-sel4-vm
       runs-on: self-hosted
-      defaults:
-        run:
-          working-directory: ./workspace
       steps:
         - name: Prepare workspace
           run: |
            ls
-           sudo chown -R $USER.$USER ../workspace
+           sudo chown -R $USER.$USER workspace
            rm -rf ../*
            echo "TII_SEL4_RELEASE=tii_sel4_${{inputs.tii_sel4_version}}" >> $GITHUB_ENV
         - name: Checkout code for using local actions
@@ -55,18 +52,22 @@ jobs:
             SSH_KEYSCAN_URL: 'github.com'
   
         - name: Build Docker image
+          working-directory: ./workspace
           run: |
             make docker
         - name: Build root file systems and kernel images
+          working-directory: ./workspace
           run: |
             sudo chown -R $USER.$USER ../workspace
             sed -i '$s/$/ -c "cd vm-images;. setup.sh;bitbake vm-image-driver;exit"/' ./docker/enter_container.sh
             make shell
         - name: Copy kernel in place for seL4 builds
+          working-directory: ./workspace
           run: |
             cp vm-images/build/tmp/deploy/images/vm-raspberrypi4-64/Image \
             projects/camkes-vm-images/rpi4
         - name: make rpi4_defconfig
+          working-directory: ./workspace
           run: |
             make rpi4_defconfig
         - name: Build vm_minimal
@@ -102,6 +103,7 @@ jobs:
         #   run: |
         #     make vm_qemu_virtio       
         -  name: Collect artifacts
+           working-directory: ./workspace
            run: |
             mkdir -p "${{env.TII_SEL4_RELEASE}}/bin/boot"
 
@@ -147,8 +149,9 @@ jobs:
             done
         - name: Copy release documentaion
           run: |
-            cp ../${{inputs.release_doc}} workspace/"${{env.TII_SEL4_RELEASE}}/"
+            cp ${{inputs.release_doc}} workspace/"${{env.TII_SEL4_RELEASE}}/"
         - name: Create release package 
+          working-directory: ./workspace
           run: |
             fakeroot tar -cjf "${{env.TII_SEL4_RELEASE}}.tar.bz2" "${{env.TII_SEL4_RELEASE}}"
         - name: Prepare artifactory for upload
