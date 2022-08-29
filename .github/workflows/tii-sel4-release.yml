@@ -40,7 +40,7 @@ jobs:
           run: |
            ls
            sudo chown -R $USER.$USER ../workspace
-           rm -rf ../* ../.*
+           rm -rf ../*
            echo "TII_SEL4_RELEASE=tii_sel4_${{inputs.tii_sel4_version}}" >> $GITHUB_ENV
         - name: Checkout code for using local actions
           uses: actions/checkout@v2
@@ -59,7 +59,7 @@ jobs:
             make docker
         - name: Build root file systems and kernel images
           run: |
-            sudo chown -R $USER.$USER .
+            sudo chown -R $USER.$USER ../workspace
             sed -i '$s/$/ -c "cd vm-images;. setup.sh;bitbake vm-image-driver;exit"/' ./docker/enter_container.sh
             make shell
         - name: Copy kernel in place for seL4 builds
