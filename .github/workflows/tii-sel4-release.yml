@@ -64,10 +64,6 @@ jobs:
           run: |
             cp vm-images/build/tmp/deploy/images/vm-raspberrypi4-64/Image \
             projects/camkes-vm-images/rpi4
-        - name: make rpi4_defconfig
-          working-directory: ./workspace
-          run: |
-            make rpi4_defconfig
         - name: Build vm_minimal
           uses: ./.github/actions/vm-image
           with:
@@ -88,18 +84,6 @@ jobs:
           with:
             CONFIG: ${{ inputs.platform }}
             TARGET: 'vm_qemu_virtio'
-        # - name: Build vm_minimal
-        #   run: |
-        #     make vm_minimal
-        # - name: Build vm_multi
-        #   run: |
-        #     make vm_multi            
-        # - name: Build sel4test
-        #   run: |
-        #     make sel4test    
-        # - name: Build supported TII seL4 images
-        #   run: |
-        #     make vm_qemu_virtio       
         -  name: Collect artifacts
            working-directory: ./workspace
            run: |
@@ -160,15 +144,5 @@ jobs:
             rt-user: ${{ secrets.RT_USER }}
             rt-api-key: ${{ secrets.RT_APIKEY }}
             rt-url: ${{ secrets.RT_URL }}
-            build-num: ${{ github.run_number }}
             input-paths:  |
               workspace/${{env.TII_SEL4_RELEASE}}.tar.bz2:tii-sel4-vm-release/
-        # - name: Push to artifactory
-        #   env:
-        #     RT_USER: ${{ secrets.RT_USER }}
-        #     RT_APIKEY: ${{ secrets.RT_APIKEY }}
-        #     RT_URL: ${{ secrets.RT_URL }}
-        #   run: |
-        #     jf c add --url "$RT_URL" --user "$RT_USER" --password "$RT_APIKEY"
-        #     jf rt ping 
-        #     jf rt u ${{env.TII_SEL4_RELEASE}}.tar.bz2 tii-sel4-vm-release/ ￼
